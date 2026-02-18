@@ -1,86 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Schedule Training | Matt Doyle Basketball</title>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { background: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
-        .fc { background: #111; padding: 20px; border-radius: 12px; border: 1px solid #333; height: 800px; }
-        .fc-toolbar-title { text-transform: uppercase; font-weight: 900; font-style: italic; }
-        /* Style for your training slots */
-        .fc-event { background: #ff6b00 !important; border: none !important; padding: 5px; cursor: pointer; transition: transform 0.2s; }
-        .fc-event:hover { transform: scale(1.02); }
-        .fc-v-event .fc-event-main { color: white; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
-    </style>
-</head>
-<body class="p-6 md:p-12">
-    <nav class="mb-12 flex justify-between items-center max-w-7xl mx-auto">
-        <a href="index.html"><img src="assets/logo.png" class="h-16"></a>
-        <div class="space-x-4">
-            <a href="about.html" class="uppercase text-xs font-bold tracking-widest hover:text-orange-500 transition mr-6">The Mentality</a>
-            <a href="index.html" class="uppercase text-xs font-bold tracking-widest border border-white/20 px-6 py-2 rounded hover:bg-white hover:text-black transition">Home</a>
-        </div>
-    </nav>
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
 
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-10">
-            <h1 class="text-6xl font-black uppercase italic mb-2 tracking-tighter leading-none">THE <span class="text-orange-500">LAB</span></h1>
-            <p class="text-gray-500 uppercase tracking-[0.3em] text-sm">Select an available slot to request a session</p>
-        </header>
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        googleCalendarApiKey: 'YOUR_API_KEY',
+        events: {
+            googleCalendarId: 'YOUR_CALENDAR_ID'
+        },
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'timeGridWeek,dayGridMonth'
+        },
+        slotMinTime: '06:00:00',
+        slotMaxTime: '22:00:00',
+        allDaySlot: false,
 
-        <div id="calendar"></div>
-        
-        <footer class="mt-10 text-center text-gray-600 text-xs uppercase tracking-widest">
-            Clicking a session will open an email draft to Matt Doyle Basketball.
-        </footer>
-    </div>
+        // FIX 1: Ensures the title and description appear inside the box
+        eventContent: function(arg) {
+            let title = arg.event.title || 'Available Session';
+            let arrayOfDomNodes = [
+                Object.assign(document.createElement('div'), {
+                    innerHTML: `<div class="font-black uppercase text-[10px] leading-tight">${title}</div>`,
+                    className: 'fc-event-title-container'
+                })
+            ];
+            return { domNodes: arrayOfDomNodes };
+        },
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarEl = document.getElementById('calendar');
-
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                // INSERT YOUR KEYS HERE
-                googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
-                events: {
-                    googleCalendarId: 'mattdoylebball@gmail.com'
-                },
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'timeGridWeek,dayGridMonth'
-                },
-                // Limits view to training hours
-                slotMinTime: '06:00:00', 
-                slotMaxTime: '22:00:00',
-                allDaySlot: false,
-                firstDay: 1, // Start week on Monday
-                
-                eventClick: function(info) {
-                    info.jsEvent.preventDefault(); // Don't open Google Calendar
-                    if (info.event.url) {
-                        const startTime = info.event.start.toLocaleString([], { 
-                            weekday: 'long', 
-                            month: 'long', 
-                            day: 'numeric', 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                        });
-                        const subject = encodeURIComponent(`Training Request: ${info.event.title}`);
-                        const body = encodeURIComponent(`Hi Matt,\n\nI would like to book the session on ${startTime}.\n\nPlease let me know if this slot is still available and how to proceed with payment.\n\nAthlete Name: `);
-                        
-                        window.location.href = `mailto:mattdoylebball@gmail.com?subject=${subject}&body=${body}`;
-                    }
-                }
+        // FIX 2: Makes the slot clickable to "Claim" via email
+        eventClick: function(info) {
+            info.jsEvent.preventDefault(); // Prevents going to Google Calendar site
+            
+            const sessionTitle = info.event.title || "Available Session";
+            const sessionTime = info.event.start.toLocaleString([], { 
+                weekday: 'long', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
             });
 
-            calendar.render();
-        });
-    </script>
-</body>
-</html>
+            // Pre-fills the email for the user
+            const email = "mattdoylebball@gmail.com";
+            const subject = encodeURIComponent(`Claiming Session: ${sessionTitle}`);
+            const body = encodeURIComponent(
+                `Hi Matt,\n\nI would like to claim the training slot for:\n${sessionTime}\n\nMy Details:\nName: [Enter Name]\nPhone: [Enter Phone]\n\nPlease let me know if this works!`
+            );
+
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        }
+    });
+
+    calendar.render();
+});
