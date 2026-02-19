@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Training | Matt Doyle Basketball</title>
-    <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,6 +19,7 @@
         }
         .fc-toolbar-title { text-transform: uppercase; font-weight: 900; font-style: italic; }
         
+        /* Event Styling - High Contrast Orange */
         .fc-event { 
             background: #ff6b00 !important; 
             border: none !important; 
@@ -39,25 +39,29 @@
             font-size: 0.75rem;
             line-height: 1.2;
         }
-        
-        nav a { transition: color 0.3s ease; }
+
+        /* Mobile Optimization: Adjust calendar height for phones */
+        @media (max-width: 768px) {
+            .fc { height: 600px; padding: 10px; }
+            .fc-toolbar-title { font-size: 1.2rem !important; }
+        }
     </style>
 </head>
-<body class="p-6 md:p-12">
+<body class="p-4 md:p-12">
     <nav class="mb-12 flex justify-between items-center max-w-7xl mx-auto">
-        <a href="index.html"><img src="assets/logo.png" class="h-16 md:h-20 w-auto"></a>
+        <a href="index.html"><img src="assets/logo.png" class="h-14 md:h-20 w-auto"></a>
         <div class="flex items-center space-x-6">
-            <a href="about.html" class="uppercase text-xs font-bold tracking-widest hover:text-orange-500">About</a>
-            <a href="index.html" class="uppercase text-xs font-bold tracking-widest border border-white/20 px-6 py-2 rounded hover:bg-white hover:text-black">Home</a>
+            <a href="about.html" class="uppercase text-xs font-bold tracking-widest hover:text-orange-500 transition">About</a>
+            <a href="index.html" class="uppercase text-xs font-bold tracking-widest border border-white/20 px-4 py-2 rounded hover:bg-white hover:text-black transition">Home</a>
         </div>
     </nav>
 
     <div class="max-w-7xl mx-auto">
         <header class="mb-10 text-center md:text-left">
             <h1 class="text-6xl md:text-8xl font-black uppercase italic mb-4 tracking-tighter leading-none">
-                THE <span class="text-orange-500 text-shadow-lg">LAB</span>
+                THE <span class="text-orange-500">LAB</span>
             </h1>
-            <p class="text-gray-500 uppercase tracking-[0.4em] text-sm font-bold">Select a slot below to claim your training session</p>
+            <p class="text-gray-500 uppercase tracking-[0.4em] text-xs md:text-sm font-bold">Select a slot below to claim your session</p>
         </header>
 
         <div id="calendar" class="shadow-2xl"></div>
@@ -74,10 +78,10 @@
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 
-                // Keys loaded from config.js
-                googleCalendarApiKey: CONFIG.GOOGLE_API_KEY,
+                // Integration Keys
+                googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
                 events: {
-                    googleCalendarId: CONFIG.CALENDAR_ID
+                    googleCalendarId: 'mattdoylebball@gmail.com'
                 },
 
                 headerToolbar: {
@@ -86,12 +90,14 @@
                     right: 'timeGridWeek,dayGridMonth'
                 },
 
+                // UI Settings
                 slotMinTime: '06:00:00', 
                 slotMaxTime: '22:00:00',
                 allDaySlot: false,
                 firstDay: 1, 
                 nowIndicator: true,
 
+                // Fix for the "Undefined" title issue
                 eventContent: function(arg) {
                     let titleText = arg.event.title || 'Available Session';
                     let el = document.createElement('div');
@@ -99,8 +105,9 @@
                     return { domNodes: [el] };
                 },
                 
+                // Click-to-Claim Email Logic
                 eventClick: function(info) {
-                    info.jsEvent.preventDefault(); 
+                    info.jsEvent.preventDefault(); // Stop redirection to Google
                     
                     const sessionName = info.event.title || "Training Session";
                     const startTime = info.event.start.toLocaleString([], { 
@@ -111,7 +118,7 @@
                         minute: '2-digit' 
                     });
 
-                    const emailRecipient = CONFIG.CALENDAR_ID;
+                    const emailRecipient = "mattdoylebball@gmail.com";
                     const emailSubject = encodeURIComponent(`Training Request: ${sessionName}`);
                     const emailBody = encodeURIComponent(
                         `Hi Matt,\n\nI want to claim the following training slot:\n\n` +
