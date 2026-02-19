@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Training | Matt Doyle Basketball</title>
+    <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,7 +20,6 @@
         }
         .fc-toolbar-title { text-transform: uppercase; font-weight: 900; font-style: italic; }
         
-        /* Event Styling - Matches your Brand */
         .fc-event { 
             background: #ff6b00 !important; 
             border: none !important; 
@@ -40,7 +40,6 @@
             line-height: 1.2;
         }
         
-        /* Navigation Styles */
         nav a { transition: color 0.3s ease; }
     </style>
 </head>
@@ -75,10 +74,10 @@
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 
-                // YOUR INTEGRATION KEYS
-                googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
+                // Keys loaded from config.js
+                googleCalendarApiKey: CONFIG.GOOGLE_API_KEY,
                 events: {
-                    googleCalendarId: 'mattdoylebball@gmail.com'
+                    googleCalendarId: CONFIG.CALENDAR_ID
                 },
 
                 headerToolbar: {
@@ -87,14 +86,12 @@
                     right: 'timeGridWeek,dayGridMonth'
                 },
 
-                // UI Settings
                 slotMinTime: '06:00:00', 
                 slotMaxTime: '22:00:00',
                 allDaySlot: false,
-                firstDay: 1, // Week starts on Monday
+                firstDay: 1, 
                 nowIndicator: true,
 
-                // Fixes the "Undefined" title issue
                 eventContent: function(arg) {
                     let titleText = arg.event.title || 'Available Session';
                     let el = document.createElement('div');
@@ -102,9 +99,8 @@
                     return { domNodes: [el] };
                 },
                 
-                // Claim Session via Email logic
                 eventClick: function(info) {
-                    info.jsEvent.preventDefault(); // Stop redirection to Google
+                    info.jsEvent.preventDefault(); 
                     
                     const sessionName = info.event.title || "Training Session";
                     const startTime = info.event.start.toLocaleString([], { 
@@ -115,7 +111,7 @@
                         minute: '2-digit' 
                     });
 
-                    const emailRecipient = "mattdoylebball@gmail.com";
+                    const emailRecipient = CONFIG.CALENDAR_ID;
                     const emailSubject = encodeURIComponent(`Training Request: ${sessionName}`);
                     const emailBody = encodeURIComponent(
                         `Hi Matt,\n\nI want to claim the following training slot:\n\n` +
