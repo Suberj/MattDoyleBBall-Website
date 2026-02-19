@@ -1,140 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Training | Matt Doyle Basketball</title>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { background: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
-        .fc { 
-            background: #111; 
-            padding: 20px; 
-            border-radius: 12px; 
-            border: 1px solid #333; 
-            height: 850px; 
-        }
-        .fc-toolbar-title { text-transform: uppercase; font-weight: 900; font-style: italic; }
-        
-        /* Event Styling - High Contrast Orange */
-        .fc-event { 
-            background: #ff6b00 !important; 
-            border: none !important; 
-            padding: 8px; 
-            cursor: pointer; 
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .fc-event:hover { 
-            transform: scale(1.03); 
-            filter: brightness(1.1);
-        }
-        .fc-v-event .fc-event-main { 
-            color: white; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            font-size: 0.75rem;
-            line-height: 1.2;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Training | Matt Doyle Basketball</title>
 
-        /* Mobile Optimization: Adjust calendar height for phones */
-        @media (max-width: 768px) {
-            .fc { height: 600px; padding: 10px; }
-            .fc-toolbar-title { font-size: 1.2rem !important; }
-        }
-    </style>
+  <!-- FullCalendar + Google Calendar plugin (READ-only) -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    body { background: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
+    .fc {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      height: 850px;
+    }
+    .fc-toolbar-title { text-transform: uppercase; font-weight: 900; font-style: italic; }
+
+    /* Event Styling - High Contrast Orange */
+    .fc-event {
+      background: #ff6b00 !important;
+      border: none !important;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .fc-event:hover {
+      transform: scale(1.03);
+      filter: brightness(1.1);
+    }
+    .fc-v-event .fc-event-main {
+      color: white;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+
+    /* Mobile Optimization: Adjust calendar height for phones */
+    @media (max-width: 768px) {
+      .fc { height: 600px; padding: 10px; }
+      .fc-toolbar-title { font-size: 1.2rem !important; }
+    }
+  </style>
 </head>
+
 <body class="p-4 md:p-12">
-    <nav class="mb-12 flex justify-between items-center max-w-7xl mx-auto">
-        <a href="index.html"><img src="assets/logo.png" class="h-14 md:h-20 w-auto"></a>
-        <div class="flex items-center space-x-6">
-            <a href="about.html" class="uppercase text-xs font-bold tracking-widest hover:text-orange-500 transition">About</a>
-            <a href="index.html" class="uppercase text-xs font-bold tracking-widest border border-white/20 px-4 py-2 rounded hover:bg-white hover:text-black transition">Home</a>
-        </div>
-    </nav>
-
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-10 text-center md:text-left">
-            <h1 class="text-6xl md:text-8xl font-black uppercase italic mb-4 tracking-tighter leading-none">
-                THE <span class="text-orange-500">LAB</span>
-            </h1>
-            <p class="text-gray-500 uppercase tracking-[0.4em] text-xs md:text-sm font-bold">Select a slot below to claim your session</p>
-        </header>
-
-        <div id="calendar" class="shadow-2xl"></div>
-        
-        <footer class="mt-12 text-center text-gray-700 text-[10px] uppercase tracking-[0.5em] font-bold">
-            &copy; 2026 Matt Doyle Basketball &bull; Built, Not Born.
-        </footer>
+  <nav class="mb-12 flex justify-between items-center max-w-7xl mx-auto">
+    <a href="index.html"><img src="assets/logo.png" class="h-14 md:h-20 w-auto" alt="Matt Doyle Basketball"></a>
+    <div class="flex items-center space-x-6">
+      <a href="about.html" class="uppercase text-xs font-bold tracking-widest hover:text-orange-500 transition">About</a>
+      <a href="index.html" class="uppercase text-xs font-bold tracking-widest border border-white/20 px-4 py-2 rounded hover:bg-white hover:text-black transition">Home</a>
     </div>
+  </nav>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarEl = document.getElementById('calendar');
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-10 text-center md:text-left">
+      <h1 class="text-6xl md:text-8xl font-black uppercase italic mb-4 tracking-tighter leading-none">
+        THE <span class="text-orange-500">LAB</span>
+      </h1>
+      <p class="text-gray-500 uppercase tracking-[0.4em] text-xs md:text-sm font-bold">
+        Select a slot below to claim your session
+      </p>
+    </header>
 
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                
-                // Integration Keys
-                googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
-                events: {
-                    googleCalendarId: 'mattdoylebball@gmail.com'
-                },
+    <div id="calendar" class="shadow-2xl"></div>
 
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'timeGridWeek,dayGridMonth'
-                },
+    <footer class="mt-12 text-center text-gray-700 text-[10px] uppercase tracking-[0.5em] font-bold">
+      &copy; 2026 Matt Doyle Basketball &bull; Built, Not Born.
+    </footer>
+  </div>
 
-                // UI Settings
-                slotMinTime: '06:00:00', 
-                slotMaxTime: '22:00:00',
-                allDaySlot: false,
-                firstDay: 1, 
-                nowIndicator: true,
+  <!-- Booking modal -->
+  <div id="bookingModal" class="fixed inset-0 hidden items-center justify-center bg-black/70 p-4 z-50">
+    <div class="w-full max-w-lg rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div>
+          <div class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold">Confirm booking</div>
+          <div id="modalTitle" class="text-xl font-black uppercase italic"></div>
+          <div id="modalTime" class="text-sm text-gray-300 mt-1"></div>
+        </div>
+        <button id="closeModal" class="rounded-lg px-3 py-2 border border-white/10 hover:bg-white/10 transition" aria-label="Close">
+          ✕
+        </button>
+      </div>
 
-                // Fix for the "Undefined" title issue
-                eventContent: function(arg) {
-                    let titleText = arg.event.title || 'Available Session';
-                    let el = document.createElement('div');
-                    el.innerHTML = `<div class="p-1 font-black leading-tight">${titleText}</div>`;
-                    return { domNodes: [el] };
-                },
-                
-                // Click-to-Claim Email Logic
-                eventClick: function(info) {
-                    info.jsEvent.preventDefault(); // Stop redirection to Google
-                    
-                    const sessionName = info.event.title || "Training Session";
-                    const startTime = info.event.start.toLocaleString([], { 
-                        weekday: 'long', 
-                        month: 'long', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                    });
+      <form id="bookingForm" class="px-6 py-5 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-xs uppercase tracking-widest text-gray-400 font-bold">Player name</span>
+            <input id="playerName" required
+              class="mt-2 w-full rounded-lg bg-zinc-900 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Your name" />
+          </label>
 
-                    const emailRecipient = "mattdoylebball@gmail.com";
-                    const emailSubject = encodeURIComponent(`Training Request: ${sessionName}`);
-                    const emailBody = encodeURIComponent(
-                        `Hi Matt,\n\nI want to claim the following training slot:\n\n` +
-                        `SESSION: ${sessionName}\n` +
-                        `TIME: ${startTime}\n\n` +
-                        `PLAYER NAME: \n` +
-                        `PHONE NUMBER: \n\n` +
-                        `Please let me know how to confirm this booking.`
-                    );
-                    
-                    window.location.href = `mailto:${emailRecipient}?subject=${emailSubject}&body=${emailBody}`;
-                }
-            });
+          <label class="block">
+            <span class="text-xs uppercase tracking-widest text-gray-400 font-bold">Phone</span>
+            <input id="phone" required
+              class="mt-2 w-full rounded-lg bg-zinc-900 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="(555) 555-5555" />
+          </label>
+        </div>
 
-            calendar.render();
-        });
-    </script>
+        <label class="block">
+          <span class="text-xs uppercase tracking-widest text-gray-400 font-bold">Email</span>
+          <input id="email" type="email" required
+            class="mt-2 w-full rounded-lg bg-zinc-900 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="you@example.com" />
+        </label>
+
+        <label class="block">
+          <span class="text-xs uppercase tracking-widest text-gray-400 font-bold">Notes (optional)</span>
+          <textarea id="notes" rows="3"
+            class="mt-2 w-full rounded-lg bg-zinc-900 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Anything Matt should know (goals, age, experience, etc.)"></textarea>
+        </label>
+
+        <div class="flex items-center justify-between pt-2">
+          <div id="statusMsg" class="text-sm text-gray-400"></div>
+          <button id="submitBtn"
+            class="rounded-xl bg-orange-500 px-5 py-3 text-black font-black uppercase tracking-widest hover:brightness-110 transition">
+            Book now
+          </button>
+        </div>
+
+        <p class="text-xs text-gray-500 leading-relaxed">
+          This will reserve the slot immediately if it is still available. If someone else grabbed it first, you’ll be prompted to pick a different time.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 hidden rounded-xl border border-white/10 bg-zinc-950 px-5 py-3 text-sm shadow-2xl">
+    <span id="toastText"></span>
+  </div>
+
+  <script>
+    // IMPORTANT REALITY CHECK:
+    // - FullCalendar + Google Calendar plugin is READ-ONLY. It can display events from Google Calendar,
+    //   but it cannot "book" (create) Google Calendar events by itself.
+    // - This page now POSTs a booking request to YOUR backend (server.js), which creates the calendar event.
+    // - If you're hosting as a static site only (GitHub Pages, Netlify static, etc.), you still need a backend.
+
+    const API_BASE = "/api"; // change to full URL if your backend is on another domain
+
+    const modal = document.getElementById("bookingModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalTime = document.getElementById("modalTime");
+    const closeModalBtn = document.getElementById("closeModal");
+    const bookingForm = document.getElementById("bookingForm");
+    const statusMsg = document.getElementById("statusMsg");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const playerNameEl = document.getElementById("playerName");
+    const phoneEl = document.getElementById("phone");
+    const emailEl = document.getElementById("email");
+    const notesEl = document.getElementById("notes");
+
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+
+    function showToast(msg) {
+      toastText.textContent = msg;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3500);
+    }
+
+    function openModal() {
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      statusMsg.textContent = "";
+    }
+
+    function closeModal() {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      bookingForm.reset();
+      statusMsg.textContent = "";
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("opacity-60");
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    // State for selected slot
+    let selectedEvent = null; // FullCalendar EventApi
+    let selectedStartIso = null;
+    let selectedEndIso = null;
+    let selectedTitle = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+
+        // READ-ONLY calendar display
+        googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
+        events: { googleCalendarId: 'mattdoylebball@gmail.com' },
+
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'timeGridWeek,dayGridMonth'
+        },
+
+        slotMinTime: '06:00:00',
+        slotMaxTime: '22:00:00',
+        allDaySlot: false,
+        firstDay: 1,
+        nowIndicator: true,
+
+        eventContent: function(arg) {
+          let titleText = arg.event.title || 'Available Session';
+          let el = document.createElement('div');
+          el.innerHTML = `<div class="p-1 font-black leading-tight">${titleText}</div>`;
+          return { domNodes: [el] };
+        },
+
+        // NEW: Click-to-book IN-SITE (opens modal + calls backend)
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+
+          selectedEvent = info.event;
+          selectedTitle = info.event.title || "Training Session";
+
+          // Use ISO strings so backend can use exact timestamps.
+          selectedStartIso = info.event.start.toISOString();
+          selectedEndIso = info.event.end ? info.event.end.toISOString() : null;
+
+          // Friendly time string in user's locale
+          const startHuman = info.event.start.toLocaleString([], {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          modalTitle.textContent = selectedTitle;
+          modalTime.textContent = startHuman;
+
+          openModal();
+        }
+      });
+
+      calendar.render();
+
+      // Booking form submit -> POST /api/book
+      bookingForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!selectedStartIso) return;
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-60");
+        statusMsg.textContent = "Booking…";
+
+        const payload = {
+          slot: {
+            // IDs let the backend optionally "replace" availability blocks (delete the availability event).
+            availabilityEventId: selectedEvent ? selectedEvent.id : null,
+
+            title: selectedTitle,
+            startIso: selectedStartIso,
+            endIso: selectedEndIso,
+          },
+          customer: {
+            name: playerNameEl.value.trim(),
+            phone: phoneEl.value.trim(),
+            email: emailEl.value.trim(),
+            notes: notesEl.value.trim()
+          }
+        };
+
+        try {
+          const res = await fetch(`${API_BASE}/book`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            const msg = data && data.error ? data.error : "Booking failed. Please try another slot.";
+            statusMsg.textContent = msg;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-60");
+            return;
+          }
+
+          // Success: remove the clicked availability block from the UI immediately.
+          if (selectedEvent) selectedEvent.remove();
+
+          closeModal();
+          showToast("Booked! You’ll receive a confirmation email shortly.");
+        } catch (err) {
+          statusMsg.textContent = "Could not reach the booking server. Try again in a moment.";
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("opacity-60");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
