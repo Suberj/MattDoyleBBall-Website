@@ -14,36 +14,85 @@
         }
         .accent-color { color: #ff6b00; }
         .bg-accent { background-color: #ff6b00; }
+        
+        /* Smooth fade for images */
+        .gallery-img {
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: grayscale(20%);
+        }
+        .gallery-img:hover {
+            transform: scale(1.02);
+            filter: grayscale(0%);
+        }
     </style>
 </head>
 <body class="scroll-smooth">
     <nav class="fixed w-full z-50 bg-black/95 border-b border-white/10 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <img src="assets/logo.png" alt="Logo" class="h-14 md:h-20 w-auto"> 
-            <div class="hidden md:flex space-x-10 uppercase text-xs font-bold tracking-[0.25em]">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <img src="assets/logo.png" alt="Logo" class="h-20 md:h-24 w-auto"> 
+            
+            <div class="hidden md:flex items-center space-x-10 uppercase text-xs font-bold tracking-[0.25em]">
                 <a href="about.html" class="hover:text-orange-500 transition">About</a>
-                <a href="booking.html" class="bg-accent text-white px-6 py-3 rounded font-black hover:bg-orange-600 transition tracking-widest">BOOK NOW</a>
+                <a href="booking.html" class="bg-accent text-white px-8 py-4 rounded font-black hover:bg-orange-600 transition tracking-widest shadow-lg shadow-orange-900/20">BOOK NOW</a>
             </div>
         </div>
     </nav>
 
-    <header class="flex flex-col items-center justify-center text-center hero-gradient px-6 pt-32 pb-20">
+    <header class="flex flex-col items-center justify-center text-center hero-gradient px-6 pt-64 pb-20">
         <div class="flex flex-col items-center max-w-5xl">
             <h1 class="text-6xl md:text-9xl font-black uppercase italic mb-4 tracking-tighter leading-tight">
                 BUILT, <span class="accent-color">NOT BORN.</span>
             </h1>
             <p class="text-xl md:text-2xl text-gray-400 mb-12 uppercase tracking-[0.5em] font-light italic">Elite Skill Development</p>
-            <a href="booking.html" class="bg-accent hover:bg-orange-600 text-white font-black py-6 px-16 rounded uppercase tracking-[0.2em] transition-all shadow-2xl mb-16 text-xl">Get Started</a>
+            <a href="booking.html" class="bg-accent hover:bg-orange-600 text-white font-black py-6 px-16 rounded uppercase tracking-[0.2em] transition-all shadow-2xl mb-20 text-xl">Get Started</a>
+            
             <img src="assets/logo.png" alt="Matt Doyle Training" class="h-64 md:h-96 w-auto object-contain">
         </div>
     </header>
 
     <section class="py-32 bg-black">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <img src="assets/image2.png" class="h-[500px] w-full object-contain bg-zinc-900 rounded-xl">
-            <img src="assets/image3.png" class="h-[500px] w-full object-contain bg-zinc-900 rounded-xl">
-            <img src="assets/image4.jpg" class="h-[500px] w-full object-contain bg-zinc-900 rounded-xl">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-20">
+            <h2 class="text-5xl font-black uppercase italic tracking-tighter">In The <span class="accent-color">Lab</span></h2>
+            <div class="h-2 w-24 bg-accent mx-auto mt-6"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
+            
+            <div class="gallery-card relative h-[600px] overflow-hidden rounded-2xl group">
+                <img src="assets/image2.png" alt="Basketball Training" 
+                    class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute bottom-0 left-0 p-8">
+                    <p class="text-orange-500 font-black uppercase tracking-widest text-sm mb-2 italic">Skill Mastery</p>
+                    <h4 class="text-2xl font-black uppercase">Technical Reps</h4>
+                </div>
+            </div>
+
+            <div class="gallery-card relative h-[600px] overflow-hidden rounded-2xl group">
+                <img src="assets/image3.png" alt="Coaching Session" 
+                    class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute bottom-0 left-0 p-8">
+                    <p class="text-orange-500 font-black uppercase tracking-widest text-sm mb-2 italic">Court Vision</p>
+                    <h4 class="text-2xl font-black uppercase">IQ Development</h4>
+                </div>
+            </div>
+
+            <div class="gallery-card relative h-[600px] overflow-hidden rounded-2xl group">
+                <img src="assets/image4.jpg" alt="Team Training" 
+                    class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute bottom-0 left-0 p-8">
+                    <p class="text-orange-500 font-black uppercase tracking-widest text-sm mb-2 italic">Game IQ</p>
+                    <h4 class="text-2xl font-black uppercase">Live Situations</h4>
+                </div>
+            </div>
+
         </div>
     </section>
+
+    <footer class="py-20 bg-zinc-950 text-center border-t border-white/5">
+        <p class="text-zinc-600 text-xs uppercase tracking-[0.5em] font-bold">&copy; 2026 Matt Doyle Basketball &bull; Built, Not Born.</p>
+    </footer>
 </body>
 </html>
