@@ -4,5 +4,17 @@
   "type": "module",
   "dependencies": {
     "googleapis": "^144.0.0"
-  }
+  },
+  "version": "1.0.0",
+  "description": "Basketball trainer's website",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
+
+
