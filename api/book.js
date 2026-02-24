@@ -108,7 +108,10 @@ export default async function handler(req, res) {
         description: descriptionLines.join("\n"),
         start: { dateTime: startIso, timeZone: TIMEZONE },
         end: { dateTime: endIso, timeZone: TIMEZONE },
-        attendees: [{ email: customer.email }],
+        attendees: [
+          { email: customer.email },
+          { email: "mattdoylebball@gmail.com" }
+        ],
       },
       sendUpdates: "all",
     });
