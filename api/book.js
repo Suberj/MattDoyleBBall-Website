@@ -3,15 +3,12 @@ import { google } from "googleapis";
 function isEmail(s) {
   return typeof s === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
-
 function mustString(s) {
   return typeof s === "string" && s.trim().length > 0;
 }
-
 function safeTrim(s) {
   return typeof s === "string" ? s.trim() : "";
 }
-
 function toIsoOrNull(s) {
   try {
     const d = new Date(s);
@@ -22,8 +19,7 @@ function toIsoOrNull(s) {
   }
 }
 
-async function sendResendEmail({ apiKey, from, to, subject, html }) {
-  // Vercel Node runtime has fetch
+async function sendResendEmail({ apiKey, from, to, subject, text }) {
   const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -34,13 +30,13 @@ async function sendResendEmail({ apiKey, from, to, subject, html }) {
       from,
       to,
       subject,
-      html,
+      text,
     }),
   });
 
   if (!resp.ok) {
-    const text = await resp.text().catch(() => "");
-    throw new Error(`Resend error ${resp.status}: ${text}`);
+    const body = await resp.text().catch(() => "");
+    throw new Error(`Resend failed (${resp.status}): ${body}`);
   }
 
   return resp.json().catch(() => ({}));
@@ -49,6 +45,8 @@ async function sendResendEmail({ apiKey, from, to, subject, html }) {
 export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  let emailSent = false;
 
   try {
     const {
@@ -61,10 +59,10 @@ export default async function handler(req, res) {
       TIMEZONE = "America/New_York",
       BOOKING_DURATION_MINUTES = "60",
 
-      // Keep deleting availability so it won't show again later
+      // Keep slots from reappearing:
       DELETE_AVAILABILITY = "true",
 
-      // Email notification settings
+      // Email notification settings (GUARANTEED):
       NOTIFY_EMAIL = "mattdoylebball@gmail.com",
       RESEND_API_KEY,
       EMAIL_FROM = "onboarding@resend.dev",
@@ -79,15 +77,12 @@ export default async function handler(req, res) {
     const customer = body.customer || {};
 
     const title = mustString(slot.title) ? slot.title.trim() : "Training Session";
-
-    // Prevent booking booked events if they ever appear/clicked
     if (title.toUpperCase().startsWith("BOOKED")) {
       return res.status(400).json({ error: "That time is already booked. Please pick another slot." });
     }
 
     const startIso = toIsoOrNull(slot.startIso);
     let endIso = toIsoOrNull(slot.endIso);
-
     if (!startIso) return res.status(400).json({ error: "Invalid start time." });
 
     if (!endIso) {
@@ -116,7 +111,7 @@ export default async function handler(req, res) {
 
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-    // Prevent double-booking
+    // Prevent double booking
     const fb = await calendar.freebusy.query({
       requestBody: {
         timeMin: startIso,
@@ -131,30 +126,25 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: "That slot was just booked. Please pick another time." });
     }
 
-    // Create event
-    const descriptionLines = [
-      "Booked via website",
-      "",
-      `Player: ${custName}`,
-      `Phone: ${custPhone}`,
-      `Email: ${custEmail}`,
-    ];
-    if (mustString(custNotes)) descriptionLines.push("", "Notes:", custNotes);
+    // Create booked event (customer gets invite)
+    const description =
+      `Booked via website\n\n` +
+      `Player: ${custName}\nPhone: ${custPhone}\nEmail: ${custEmail}\n` +
+      (custNotes ? `\nNotes:\n${custNotes}\n` : "");
 
     const created = await calendar.events.insert({
       calendarId: GOOGLE_CALENDAR_ID,
       requestBody: {
         summary: `BOOKED: ${title} — ${custName}`,
-        description: descriptionLines.join("\n"),
+        description,
         start: { dateTime: startIso, timeZone: TIMEZONE },
         end: { dateTime: endIso, timeZone: TIMEZONE },
-        // Keep customer as attendee so THEY get an invite
         attendees: [{ email: custEmail }],
       },
       sendUpdates: "all",
     });
 
-    // Delete the original availability slot so it won't appear again later
+    // Delete the clicked availability event so it doesn't come back
     const availabilityEventId = safeTrim(slot.availabilityEventId);
     if (DELETE_AVAILABILITY === "true" && mustString(availabilityEventId)) {
       try {
@@ -168,56 +158,53 @@ export default async function handler(req, res) {
       }
     }
 
-    // GUARANTEED EMAIL NOTIFICATION (Resend)
-    // If Resend isn't configured, we don't fail the booking; we just skip the email.
-    if (isEmail(NOTIFY_EMAIL) && mustString(RESEND_API_KEY)) {
-      const when = new Date(startIso).toLocaleString("en-US", {
-        timeZone: TIMEZONE,
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      });
+    // GUARANTEED premade email notification
+    const notifyTo = safeTrim(NOTIFY_EMAIL);
 
-      const subject = `New booking: ${custName} — ${when}`;
-      const html = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.4;">
-          <h2>New Booking Received</h2>
-          <p><b>Title:</b> ${title}</p>
-          <p><b>When:</b> ${when} (${TIMEZONE})</p>
-          <p><b>Player:</b> ${custName}</p>
-          <p><b>Phone:</b> ${custPhone}</p>
-          <p><b>Email:</b> ${custEmail}</p>
-          ${custNotes ? `<p><b>Notes:</b><br/>${custNotes.replaceAll("\n", "<br/>")}</p>` : ""}
-          ${
-            created?.data?.htmlLink
-              ? `<p><a href="${created.data.htmlLink}">Open event in Google Calendar</a></p>`
-              : ""
-          }
-        </div>
-      `;
+    // Format start time nicely
+    const startLocal = new Date(startIso).toLocaleString("en-US", {
+      timeZone: TIMEZONE,
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    if (mustString(RESEND_API_KEY) && isEmail(notifyTo)) {
+      const subject = `New booking: ${startLocal}`;
+      const text =
+        `Someone has booked your ${startLocal} (${TIMEZONE}). Check your calendar.\n\n` +
+        `Title: ${title}\n` +
+        `Player: ${custName}\n` +
+        `Phone: ${custPhone}\n` +
+        `Email: ${custEmail}\n` +
+        (custNotes ? `\nNotes:\n${custNotes}\n` : "") +
+        (created?.data?.htmlLink ? `\nOpen event:\n${created.data.htmlLink}\n` : "");
 
       try {
         await sendResendEmail({
           apiKey: RESEND_API_KEY,
           from: EMAIL_FROM,
-          to: NOTIFY_EMAIL,
+          to: notifyTo,
           subject,
-          html,
+          text,
         });
+        emailSent = true;
       } catch {
-        // Don't fail booking if email fails
+        // Do not fail the booking if email fails
+        emailSent = false;
       }
     }
 
     return res.status(200).json({
       ok: true,
+      emailSent,
       eventId: created?.data?.id || null,
       htmlLink: created?.data?.htmlLink || null,
     });
   } catch {
-    return res.status(500).json({ error: "Server error creating booking." });
+    return res.status(500).json({ error: "Server error creating booking.", emailSent });
   }
 }
