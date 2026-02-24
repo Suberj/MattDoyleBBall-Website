@@ -1,3 +1,4 @@
+// /api/book.js
 import { google } from "googleapis";
 
 function isEmail(s) {
@@ -17,7 +18,7 @@ function toIsoOrNull(s) {
 }
 
 export default async function handler(req, res) {
-  // Optional: allow preflight (usually not needed if same-origin)
+  // Preflight (usually not needed if same-origin, but harmless)
   if (req.method === "OPTIONS") return res.status(204).end();
 
   if (req.method !== "POST") {
@@ -30,17 +31,21 @@ export default async function handler(req, res) {
       GOOGLE_CLIENT_SECRET,
       GOOGLE_REDIRECT_URI,
       GOOGLE_REFRESH_TOKEN,
+
       GOOGLE_CALENDAR_ID = "primary",
       TIMEZONE = "America/New_York",
       BOOKING_DURATION_MINUTES = "60",
       DELETE_AVAILABILITY = "false",
+
+      // NEW: who gets notified (added as attendee so they receive an email)
+      NOTIFY_EMAIL = "mattdoylebball@gmail.com",
     } = process.env;
 
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI || !GOOGLE_REFRESH_TOKEN) {
       return res.status(500).json({ error: "Server not configured (missing Google OAuth env vars)." });
     }
 
-    // Parse body
+    // Body: { slot: { title, startIso, endIso, availabilityEventId? }, customer: { name, phone, email, notes? } }
     const body = req.body || {};
     const slot = body.slot || {};
     const customer = body.customer || {};
@@ -51,7 +56,7 @@ export default async function handler(req, res) {
 
     if (!startIso) return res.status(400).json({ error: "Invalid start time." });
 
-    // If no end was provided by the calendar event, default to a fixed duration
+    // If the displayed availability block doesn't include an end time, default to fixed duration
     if (!endIso) {
       const d = new Date(startIso);
       const minutes = Number(BOOKING_DURATION_MINUTES) || 60;
@@ -88,7 +93,7 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: "That slot was just booked. Please pick another time." });
     }
 
-    // 2) Create the booked event (and invite customer)
+    // 2) Create booked event + invite attendees
     const descriptionLines = [
       "Booked via website",
       "",
@@ -101,6 +106,13 @@ export default async function handler(req, res) {
       descriptionLines.push("", "Notes:", customer.notes.trim());
     }
 
+    // Add NOTIFY_EMAIL as an attendee so they receive an email notification too.
+    // Avoid duplicating if customer email == notify email.
+    const attendees = [{ email: customer.email }];
+    if (isEmail(NOTIFY_EMAIL) && NOTIFY_EMAIL.toLowerCase() !== customer.email.toLowerCase()) {
+      attendees.push({ email: NOTIFY_EMAIL });
+    }
+
     const created = await calendar.events.insert({
       calendarId: GOOGLE_CALENDAR_ID,
       requestBody: {
@@ -108,11 +120,9 @@ export default async function handler(req, res) {
         description: descriptionLines.join("\n"),
         start: { dateTime: startIso, timeZone: TIMEZONE },
         end: { dateTime: endIso, timeZone: TIMEZONE },
-        attendees: [
-          { email: customer.email },
-          { email: "mattdoylebball@gmail.com" }
-        ],
+        attendees,
       },
+      // This triggers email notifications to attendees
       sendUpdates: "all",
     });
 
@@ -134,7 +144,7 @@ export default async function handler(req, res) {
       eventId: created?.data?.id || null,
       htmlLink: created?.data?.htmlLink || null,
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ error: "Server error creating booking." });
   }
 }
