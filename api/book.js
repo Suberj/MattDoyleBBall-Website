@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       DELETE_AVAILABILITY = "true",
 
       // FIX #2: who should receive an email notification (invite) besides the customer
-      NOTIFY_EMAIL = "mattdoylebasketball@gmail.com",
+      NOTIFY_EMAIL = "mattdoylebball@gmail.com",
     } = process.env;
 
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI || !GOOGLE_REFRESH_TOKEN) {
