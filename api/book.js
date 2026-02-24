@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       DELETE_AVAILABILITY = "true",
 
       // Email notification settings
-      NOTIFY_EMAIL = "mattdoylebasketball@gmail.com",
+      NOTIFY_EMAIL = "mattdoylebball@gmail.com",
       RESEND_API_KEY,
       EMAIL_FROM = "onboarding@resend.dev",
     } = process.env;
