@@ -204,9 +204,47 @@
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
 
-        // READ-ONLY calendar display
-        googleCalendarApiKey: 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18',
-        events: { googleCalendarId: 'mattdoylebball@gmail.com' },
+        // READ-ONLY calendar display — public events only
+        // We fetch manually so we can filter by visibility === 'public'
+        events: async function(fetchInfo, successCallback, failureCallback) {
+          const API_KEY = 'AIzaSyBqvry2Wl7YdZLwDh8cn3yCWs2Kj5kdB18';
+          const CAL_ID = encodeURIComponent('mattdoylebball@gmail.com');
+          const timeMin = fetchInfo.startStr;
+          const timeMax = fetchInfo.endStr;
+
+          try {
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${CAL_ID}/events` +
+              `?key=${API_KEY}` +
+              `&timeMin=${encodeURIComponent(timeMin)}` +
+              `&timeMax=${encodeURIComponent(timeMax)}` +
+              `&singleEvents=true` +
+              `&orderBy=startTime` +
+              `&visibility=public`;
+
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`Google API error: ${resp.status}`);
+            const data = await resp.json();
+
+            // Filter to only events explicitly marked public
+            const publicEvents = (data.items || []).filter(
+              item => item.visibility === 'public'
+            );
+
+            // Map to FullCalendar event objects
+            const fcEvents = publicEvents.map(item => ({
+              id: item.id,
+              title: item.summary || 'Available Session',
+              start: item.start.dateTime || item.start.date,
+              end: item.end.dateTime || item.end.date,
+              url: '', // prevent navigation on click
+            }));
+
+            successCallback(fcEvents);
+          } catch (err) {
+            console.error('Failed to load calendar events:', err);
+            failureCallback(err);
+          }
+        },
 
         headerToolbar: {
           left: 'prev,next today',
@@ -214,8 +252,8 @@
           right: 'timeGridWeek,dayGridMonth'
         },
 
-        slotMinTime: '06:00:00',
-        slotMaxTime: '22:00:00',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '24:00:00',
         allDaySlot: false,
         firstDay: 1,
         nowIndicator: true,
