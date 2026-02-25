@@ -82,15 +82,3 @@ Events marked **Default** or **Private** are filtered out and will not show on t
 
 ---
 
-## Local Development
-
-```bash
-npm install
-vercel dev
-```
-
-Requires the [Vercel CLI](https://vercel.com/docs/cli) and a `.env` file with the variables listed above.
-
----
-
-© 2026 Matt Doyle Basketball · Built, Not Born.
