@@ -9,29 +9,93 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; }
         .accent-color { color: #ff6b00; }
+        .bg-accent { background-color: #ff6b00; }
     </style>
 </head>
 <body>
-    <nav class="w-full bg-black border-b border-white/10 p-6 flex justify-between items-center">
-        <a href="index.html"><img src="assets/logo.png" class="h-12"></a>
-        <div class="space-x-8 uppercase text-xs font-bold tracking-widest">
-            <a href="index.html" class="hover:text-orange-500">Home</a>
-            <a href="booking.html" class="hover:text-orange-500">Booking</a>
+    <nav class="fixed w-full z-50 bg-black/95 border-b border-white/10 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="index.html"><img src="assets/logo.png" class="h-16 w-auto"></a>
+            <div class="hidden md:flex items-center space-x-10 uppercase text-xs font-bold tracking-[0.25em]">
+                <a href="about.html" class="text-orange-500 transition">About</a>
+                <a href="matt.html" class="hover:text-orange-500 transition">About Matt</a>
+                <a href="sessions.html" class="hover:text-orange-500 transition">Sessions</a>
+                <a href="collegeprep.html" class="hover:text-orange-500 transition">College Prep</a>
+                <a href="booking.html" class="bg-accent text-white px-8 py-4 rounded font-black hover:bg-orange-600 transition tracking-widest shadow-lg shadow-orange-900/20">BOOK NOW</a>
+            </div>
         </div>
     </nav>
 
-    <section class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="grid lg:grid-cols-2 gap-20 items-center">
-            <img src="assets/headshot.jpg" class="rounded-xl shadow-2xl max-h-[700px] w-auto mx-auto">
-            <div>
-                <h2 class="text-7xl font-black uppercase italic mb-8 tracking-tighter">The <span class="accent-color">Mentality</span></h2>
-                <p class="text-gray-400 text-2xl leading-relaxed mb-8">Basketball isn't just about talent; it's about the hours spent when the lights are off. My training focuses on game-speed skills and mental toughness.</p>
-                <div class="space-y-4">
-                    <div class="p-6 bg-zinc-900 border-l-4 border-orange-500 font-bold uppercase tracking-widest">Skill Mastery</div>
-                    <div class="p-6 bg-zinc-900 border-l-4 border-orange-500 font-bold uppercase tracking-widest">High-Pressure IQ</div>
+    <section class="pt-48 pb-32 px-6">
+        <div class="max-w-4xl mx-auto">
+
+            <h1 class="text-7xl md:text-9xl font-black uppercase italic mb-6 tracking-tighter leading-none">
+                THE <span class="accent-color">DIFFERENCE</span>
+            </h1>
+            <p class="text-gray-500 uppercase tracking-[0.4em] text-xs font-bold mb-16">Most trainers sell skill. We build complete players.</p>
+
+            <p class="text-2xl text-gray-300 leading-relaxed mb-16">
+                At Matt Doyle Basketball Training, athletes develop more than just skill. Training here builds the full player.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-20">
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Game-Ready Skill</p>
+                </div>
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Decision-Making Under Pressure</p>
+                </div>
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Physical Preparation</p>
+                </div>
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Confidence</p>
+                </div>
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Discipline</p>
+                </div>
+                <div class="p-6 bg-zinc-900 border-l-4 border-orange-500">
+                    <p class="font-black uppercase tracking-widest text-sm">Accountability</p>
                 </div>
             </div>
+
+            <div class="border-t border-white/10 pt-16 mb-16">
+                <p class="text-xl text-gray-400 leading-relaxed">
+                    Our mission is long-term development — not quick results. Great athletes are built, not born.
+                </p>
+            </div>
+
+            <h2 class="text-4xl font-black uppercase italic mb-10 tracking-tighter">We Are Here <span class="accent-color">For:</span></h2>
+
+            <div class="space-y-4 mb-20">
+                <div class="flex items-start gap-4 p-5 bg-zinc-900 rounded-xl">
+                    <span class="text-orange-500 font-black text-lg mt-0.5">✔</span>
+                    <p class="text-gray-300 font-bold uppercase tracking-wide text-sm">Basketball players (middle school, high school, college, etc.) who want to put in the work</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-zinc-900 rounded-xl">
+                    <span class="text-orange-500 font-black text-lg mt-0.5">✔</span>
+                    <p class="text-gray-300 font-bold uppercase tracking-wide text-sm">Athletes looking to separate themselves from the pack</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-zinc-900 rounded-xl">
+                    <span class="text-orange-500 font-black text-lg mt-0.5">✔</span>
+                    <p class="text-gray-300 font-bold uppercase tracking-wide text-sm">Players preparing for college basketball</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-zinc-900 rounded-xl">
+                    <span class="text-orange-500 font-black text-lg mt-0.5">✔</span>
+                    <p class="text-gray-300 font-bold uppercase tracking-wide text-sm">Families who value structure and accountability</p>
+                </div>
+            </div>
+
+            <div class="text-center py-16 border-t border-white/10">
+                <p class="text-3xl font-black uppercase italic tracking-tight text-gray-200 mb-8">If you're serious about improvement — <span class="accent-color">this is your environment.</span></p>
+                <a href="booking.html" class="inline-block bg-accent hover:bg-orange-600 text-white font-black py-5 px-14 rounded uppercase tracking-[0.2em] transition-all shadow-2xl text-lg">Book Your Training</a>
+            </div>
+
         </div>
     </section>
+
+    <footer class="py-20 bg-zinc-950 text-center border-t border-white/5">
+        <p class="text-zinc-600 text-xs uppercase tracking-[0.5em] font-bold">&copy; 2026 Matt Doyle Basketball &bull; Built, Not Born.</p>
+    </footer>
 </body>
 </html>
